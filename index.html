@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificador de Certificados — IEEE Sección Ecuador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #00629B;   /* azul oficial IEEE */
+      --blue-dk:   #004f7c;   /* hover / acento oscuro */
+      --blue-lt:   #e6f1f8;   /* fondo suave azulado */
+      --blue-mid:  #b8d9ee;   /* bordes azules */
+      --white:     #ffffff;
+      --ink:       #0d1b2a;
+      --paper:     #f2f7fb;
+      --muted:     #4e6070;
+      --border:    #ccdce8;
+      --red:       #b92b2b;
+      --red-lt:    #fdf2f2;
+      --red-mid:   #f0b8b8;
+      --green:     #1a6e40;
+      --green-lt:  #edf7f1;
+      --green-mid: #9fd4b5;
+    }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+    }
+
+    /* Glow azul sutil en la parte superior */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 320px;
+      background: linear-gradient(to bottom, rgba(0,98,155,0.07), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+      animation: rise 0.6s ease both;
+    }
+
+    .logo-wrap { margin-bottom: 22px; }
+
+    .logo-wrap img {
+      height: 80px;
+      width: auto;
+      max-width: 280px;
+      object-fit: contain;
+    }
+
+    /* Fallback si no hay logo */
+    .logo-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .logo-fallback .ieee-text {
+      font-family: 'Source Serif 4', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.04em;
+    }
+    .logo-fallback .section-text {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(24px, 4.5vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .subtitle strong { color: var(--blue); font-weight: 600; }
+
+    .divider-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .divider-line::before, .divider-line::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--blue-mid);
+      opacity: 0.6;
+    }
+    .divider-line span {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 36px 32px;
+      box-shadow:
+        0 0 0 1px rgba(0,98,155,0.05),
+        0 4px 24px rgba(0,98,155,0.08),
+        0 1px 3px rgba(0,0,0,0.04);
+      animation: rise 0.6s ease 0.1s both;
+      /* franja azul top */
+      border-top: 3px solid var(--blue);
+    }
+
+    .config-banner {
+      background: #fffbea;
+      border: 1px solid #f0d050;
+      border-radius: 6px;
+      padding: 11px 14px;
+      font-size: 12.5px;
+      color: #7a5800;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .config-banner.show { display: block; }
+
+    .field-label {
+      display: block;
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--blue-lt);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--blue);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(0,98,155,0.12);
+    }
+
+    input::placeholder {
+      color: #a0b4c4;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      background: var(--blue);
+      color: var(--white);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--blue-dk);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,98,155,0.28);
+    }
+    .btn:active { transform: none; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn.loading .spinner { display: block; }
+    .btn.loading .btn-text { display: none; }
+
+    /* ── Result ── */
+    .result { margin-top: 24px; display: none; border-radius: 8px; padding: 24px; animation: rise 0.4s ease both; }
+
+    .result.valid {
+      display: block;
+      background: var(--green-lt);
+      border: 1px solid var(--green-mid);
+      border-left: 4px solid var(--green);
+    }
+
+    .result.invalid {
+      display: block;
+      background: var(--red-lt);
+      border: 1px solid var(--red-mid);
+      border-left: 4px solid var(--red);
+    }
+
+    .result-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+
+    .result-icon {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .valid   .result-icon { background: var(--green); }
+    .invalid .result-icon { background: var(--red); }
+
+    .result-title {
+      font-family: 'Source Serif 4', serif;
+      font-size: 19px; font-weight: 700;
+    }
+    .valid   .result-title { color: var(--green); }
+    .invalid .result-title { color: var(--red); }
+    .result-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .sep { height: 1px; background: var(--border); margin: 14px 0; opacity: 0.6; }
+
+    .data-grid { display: grid; grid-template-columns: 120px 1fr; gap: 12px 16px; align-items: start; }
+    .data-label { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding-top: 2px; }
+    .data-value { font-size: 14.5px; font-weight: 500; color: var(--ink); }
+
+    .stamp {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--green); font-weight: 600; opacity: 0.75;
+    }
+
+    .invalid-msg { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      animation: rise 0.6s ease 0.2s both;
+    }
+
+    .footer a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    @keyframes rise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    @keyframes spin  { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="IEEE Sección Ecuador"
+           onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';" />
+      <div id="logo-fallback" class="logo-fallback">
+        <span class="ieee-text">IEEE</span>
+        <span class="section-text">Sección Ecuador</span>
+      </div>
+    </div>
+    <h1>Verificador de Certificados</h1>
+    <p class="subtitle">Certificados emitidos por <strong>IEEE Sección Ecuador</strong></p>
+    <div class="divider-line"><span>verificación oficial</span></div>
+  </div>
+
+  <div class="card">
+    <div id="configBanner" class="config-banner">
+      ⚙️ Configura el <strong>SHEET_ID</strong> en el script antes de publicar.
+    </div>
+
+    <label class="field-label" for="certId">Código del certificado</label>
+    <input
+      type="text"
+      id="certId"
+      placeholder="Ej: EVT-2024-001"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="characters"
+      spellcheck="false"
+      maxlength="40"
+    />
+    <p class="hint">El código aparece impreso en tu certificado.</p>
+
+    <button class="btn" id="verifyBtn" onclick="verify()">
+      <span class="btn-text">Verificar certificado</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <div class="footer">
+    <a href="https://r9.ieee.org/ecuador/" target="_blank">IEEE Sección Ecuador</a>
+    &nbsp;·&nbsp; Sistema de verificación oficial
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  ▸ CONFIGURACIÓN — edita solo esta sección
+// ════════════════════════════════════════════════════
+const CONFIG = {
+  SHEET_ID:   '1xDchX5T81kLX-CRrSKCBCdoD4Cz1MIOQMNqVUT9rPWQ',  // ← ID del Google Sheet (ver README)
+  SHEET_NAME: 'Certificados',  // ✅ nombre correcto confirmado       // ← Nombre de la pestaña en el Sheet
+
+  // Índice de cada columna (0 = columna A, 1 = B, 2 = C...)
+  COL_ID:     0,   // A → Código único  (ej: EVT-2024-001)
+  COL_NAME:   1,   // B → Nombre del participante
+  COL_EVENT:  2,   // C → Nombre del evento
+  COL_DATE:   3,   // D → Fecha de emisión
+  COL_STATUS: 4,   // E → Estado: "Válido" | "REVOCADO"
+};
+// ════════════════════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (false) {
+    document.getElementById('configBanner').classList.add('show');
+  }
+});
+
+document.getElementById('certId').addEventListener('keydown', e => {
+  if (e.key === 'Enter') verify();
+});
+
+async function verify() {
+  const input = document.getElementById('certId');
+  const btn   = document.getElementById('verifyBtn');
+  const code  = input.value.trim().toUpperCase();
+
+  if (!code) { input.focus(); return; }
+
+  renderResult(null);
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  try {
+    const url  = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+
+    const row = (json.table.rows || []).find(r => {
+      const cell = r.c[CONFIG.COL_ID];
+      return cell?.v && String(cell.v).trim().toUpperCase() === code;
+    });
+
+    if (!row) {
+      renderResult('not-found', { code });
+    } else {
+      const get    = i => row.c[i]?.v ?? '';
+      const status = String(get(CONFIG.COL_STATUS)).trim().toUpperCase();
+      const revoked = ['REVOCADO', 'ANULADO', 'INVALIDO', 'INACTIVO'].includes(status);
+      renderResult(revoked ? 'revoked' : 'valid', {
+        name:  get(CONFIG.COL_NAME),
+        event: get(CONFIG.COL_EVENT),
+        date:  get(CONFIG.COL_DATE),
+      });
+    }
+
+  } catch (err) {
+    console.error(err);
+    renderResult('error');
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+}
+
+function renderResult(type, data = {}) {
+  const el = document.getElementById('result');
+  el.className = 'result';
+  el.innerHTML = '';
+  if (!type) return;
+
+  const templates = {
+    valid: () => `
+      <div class="result-head">
+        <div class="result-icon">✅</div>
+        <div>
+          <div class="result-title">Certificado válido</div>
+          <div class="result-sub">Registro verificado correctamente</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="data-grid">
+        ${dataRow('Participante', data.name)}
+        ${dataRow('Evento', data.event)}
+        ${dataRow('Fecha de emisión', data.date)}
+      </div>
+      <div class="stamp">✦ Verificado — IEEE Sección Ecuador</div>`,
+
+    revoked: () => `
+      <div class="result-head">
+        <div class="result-icon">⛔</div>
+        <div>
+          <div class="result-title">Certificado revocado</div>
+          <div class="result-sub">Este certificado fue anulado</div>
+        </div>
+      </div>
+      <p class="invalid-msg" style="margin-top:4px">
+        El código existe en nuestros registros pero el certificado fue revocado y no tiene validez oficial.
+      </p>`,
+
+    'not-found': () => `
+      <div class="result-head">
+        <div class="result-icon">❌</div>
+        <div>
+          <div class="result-title">No encontrado</div>
+          <div class="result-sub">El código no existe en los registros</div>
+        </div>
+      </div>
+      <p class="invalid-msg" style="margin-top:4px">
+        Código ingresado: <strong style="letter-spacing:.08em">${esc(data.code)}</strong><br>
+        Verifica que lo hayas escrito correctamente tal como aparece en tu certificado.
+      </p>`,
+
+    error: () => `
+      <div class="result-head">
+        <div class="result-icon">⚠️</div>
+        <div>
+          <div class="result-title">Error de conexión</div>
+          <div class="result-sub">No se pudo consultar la base de datos</div>
+        </div>
+      </div>
+      <p class="invalid-msg" style="margin-top:4px">
+        Revisa tu conexión a internet e intenta de nuevo. Si el problema persiste, contacta al organizador.
+      </p>`,
+  };
+
+  el.className = `result ${type === 'valid' ? 'valid' : 'invalid'}`;
+  el.innerHTML = templates[type]?.() ?? '';
+}
+
+function dataRow(label, value) {
+  if (!value) return '';
+  return `<span class="data-label">${esc(label)}</span><span class="data-value">${esc(String(value))}</span>`;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

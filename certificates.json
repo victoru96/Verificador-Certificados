@@ -1,0 +1,26 @@
+{
+  "lastUpdated": "2024-03-01",
+  "certificates": [
+    {
+      "id": "EVT-2024-001",
+      "name": "Ana García López",
+      "event": "Congreso Internacional de Innovación 2024",
+      "date": "1 de marzo de 2024",
+      "status": "Válido"
+    },
+    {
+      "id": "EVT-2024-002",
+      "name": "Carlos Mendoza Ruiz",
+      "event": "Congreso Internacional de Innovación 2024",
+      "date": "1 de marzo de 2024",
+      "status": "Válido"
+    },
+    {
+      "id": "EVT-2024-003",
+      "name": "María Torres Vega",
+      "event": "Congreso Internacional de Innovación 2024",
+      "date": "1 de marzo de 2024",
+      "status": "REVOCADO"
+    }
+  ]
+}

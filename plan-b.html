@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificador de Certificados — Plan B</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:      #0c0c0e;
+      --paper:    #f5f2ec;
+      --cream:    #ede9df;
+      --gold:     #b8935a;
+      --gold-lt:  #d4ae7a;
+      --seal:     #1a3a2a;
+      --seal-lt:  #2d5c42;
+      --red:      #8b2020;
+      --muted:    #7a7068;
+      --border:   #d5cfc3;
+    }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f2ec'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23e8e4da' opacity='0.4'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23e8e4da' opacity='0.3'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap { position: relative; z-index: 1; width: 100%; max-width: 520px; }
+
+    .header { text-align: center; margin-bottom: 40px; animation: rise 0.6s ease both; }
+
+    .seal-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--seal); border: 2px solid var(--gold);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(26,58,42,0.2);
+    }
+    .seal-badge svg { width: 28px; height: 28px; fill: var(--gold); }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 38px);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .subtitle { margin-top: 10px; font-size: 14px; color: var(--muted); font-weight: 300; }
+
+    .ornament { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .ornament::before, .ornament::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+    .ornament span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+
+    /* Plan B banner */
+    .planb-banner {
+      background: #fffbeb;
+      border: 1px solid #f0d060;
+      border-radius: 3px;
+      padding: 11px 14px;
+      font-size: 12.5px;
+      color: #7a5c00;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 36px 32px;
+      box-shadow: 0 1px 0 var(--gold), 0 4px 32px rgba(0,0,0,0.07);
+      animation: rise 0.6s ease 0.1s both;
+      position: relative;
+    }
+    .card::before, .card::after {
+      content: ''; position: absolute;
+      width: 18px; height: 18px;
+      border-color: var(--gold); border-style: solid; opacity: 0.3;
+    }
+    .card::before { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+    .card::after  { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+    .field-label {
+      display: block; font-size: 10px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 21px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink); background: var(--cream);
+      border: 1px solid var(--border); border-radius: 3px;
+      padding: 14px 16px; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,147,90,0.12);
+    }
+    input::placeholder { color: #c8c2b8; font-size: 15px; letter-spacing: 0.06em; }
+
+    .hint { margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+    .btn {
+      margin-top: 20px; width: 100%; padding: 15px;
+      background: var(--seal); color: var(--gold-lt);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      border: none; border-radius: 3px; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn:hover:not(:disabled) { background: var(--seal-lt); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,58,42,0.2); }
+    .btn:active { transform: none; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .result { margin-top: 24px; display: none; border-radius: 3px; padding: 26px; animation: rise 0.4s ease both; }
+    .result.valid   { display: block; background: #f0f7f3; border: 1px solid #9fcfb5; border-left: 4px solid var(--seal); }
+    .result.invalid { display: block; background: #fdf3f3; border: 1px solid #e0b0b0; border-left: 4px solid var(--red); }
+
+    .result-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+
+    .result-icon {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; flex-shrink: 0;
+    }
+    .valid   .result-icon { background: var(--seal); }
+    .invalid .result-icon { background: var(--red); }
+
+    .result-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+    .valid   .result-title { color: var(--seal); }
+    .invalid .result-title { color: var(--red); }
+    .result-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .sep { height: 1px; background: linear-gradient(to right, var(--border), transparent); margin: 14px 0; }
+
+    .data-grid { display: grid; grid-template-columns: 110px 1fr; gap: 12px 16px; align-items: start; }
+    .data-label { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding-top: 2px; }
+    .data-value { font-size: 15px; font-weight: 500; color: var(--ink); }
+
+    .stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--seal); font-weight: 600; opacity: 0.65; }
+    .invalid-msg { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .last-update { text-align: center; font-size: 11px; color: var(--muted); margin-top: 16px; }
+    .footer { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; animation: rise 0.6s ease 0.2s both; }
+
+    @keyframes rise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="seal-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    </div>
+    <h1>Verificador de<br>Certificados</h1>
+    <p class="subtitle">Modo sin conexión — datos locales</p>
+    <div class="ornament"><span>plan b</span></div>
+  </div>
+
+  <div class="card">
+    <div class="planb-banner">
+      📂 <span>Usando datos locales (<code>certificates.json</code>). Actualiza ese archivo y sube a GitHub cuando agregues participantes.</span>
+    </div>
+
+    <label class="field-label" for="certId">Código del certificado</label>
+    <input
+      type="text"
+      id="certId"
+      placeholder="Ej: EVT-2024-001"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="characters"
+      spellcheck="false"
+      maxlength="40"
+    />
+    <p class="hint">El código aparece impreso en tu certificado.</p>
+
+    <button class="btn" onclick="verify()">Verificar certificado</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <div id="lastUpdate" class="last-update"></div>
+  <div class="footer">Sistema de verificación oficial &nbsp;·&nbsp; Datos actualizados manualmente</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  PLAN B — Lee certificates.json (sin Google Sheets)
+//  Actualiza el JSON y sube a GitHub cuando sea necesario.
+// ════════════════════════════════════════════════════
+let DB = [];
+
+async function loadDB() {
+  try {
+    const res  = await fetch('./certificates.json');
+    const data = await res.json();
+    DB = data.certificates || [];
+    if (data.lastUpdated) {
+      document.getElementById('lastUpdate').textContent =
+        `Última actualización de datos: ${data.lastUpdated}`;
+    }
+  } catch (e) {
+    console.error('No se pudo cargar certificates.json', e);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => loadDB());
+
+document.getElementById('certId').addEventListener('keydown', e => {
+  if (e.key === 'Enter') verify();
+});
+
+function verify() {
+  const input = document.getElementById('certId');
+  const code  = input.value.trim().toUpperCase();
+  if (!code) { input.focus(); return; }
+
+  const match = DB.find(c => String(c.id).trim().toUpperCase() === code);
+
+  if (!match) {
+    renderResult('not-found', { code });
+  } else {
+    const status  = String(match.status || '').trim().toUpperCase();
+    const revoked = ['REVOCADO','ANULADO','INVALIDO'].includes(status);
+    renderResult(revoked ? 'revoked' : 'valid', match);
+  }
+}
+
+function renderResult(type, data = {}) {
+  const el = document.getElementById('result');
+  el.className = 'result';
+  el.innerHTML = '';
+
+  const templates = {
+    valid: () => `
+      <div class="result-head">
+        <div class="result-icon">✅</div>
+        <div>
+          <div class="result-title">Certificado válido</div>
+          <div class="result-sub">Registro verificado correctamente</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="data-grid">
+        ${dr('Participante', data.name)}
+        ${dr('Evento', data.event)}
+        ${dr('Fecha de emisión', data.date)}
+      </div>
+      <div class="stamp">✦ Verificado — registro oficial</div>`,
+
+    revoked: () => `
+      <div class="result-head">
+        <div class="result-icon">⛔</div>
+        <div>
+          <div class="result-title">Certificado revocado</div>
+          <div class="result-sub">Este certificado fue anulado</div>
+        </div>
+      </div>
+      <p class="invalid-msg" style="margin-top:4px">El certificado existe en nuestros registros pero fue revocado y no tiene validez oficial.</p>`,
+
+    'not-found': () => `
+      <div class="result-head">
+        <div class="result-icon">❌</div>
+        <div>
+          <div class="result-title">No encontrado</div>
+          <div class="result-sub">El código no existe en los registros</div>
+        </div>
+      </div>
+      <p class="invalid-msg" style="margin-top:4px">Código ingresado: <strong style="letter-spacing:.08em">${esc(data.code)}</strong><br>Verifica que lo hayas escrito tal como aparece en tu certificado.</p>`,
+  };
+
+  el.className = `result ${type === 'valid' ? 'valid' : 'invalid'}`;
+  el.innerHTML = templates[type]?.() ?? '';
+}
+
+function dr(label, value) {
+  if (!value) return '';
+  return `<span class="data-label">${esc(label)}</span><span class="data-value">${esc(String(value))}</span>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
