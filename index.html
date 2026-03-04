@@ -4,380 +4,100 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verificador de Certificados — IEEE Sección Ecuador</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Instrument+Sans:wght@300;400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      --blue:      #00629B;
-      --blue-dk:   #004f7c;
-      --blue-lt:   #e6f1f8;
-      --blue-mid:  #b8d9ee;
-      --white:     #ffffff;
-      --ink:       #0d1b2a;
-      --paper:     #f2f7fb;
-      --muted:     #4e6070;
-      --border:    #ccdce8;
-      --red:       #b92b2b;
-      --red-lt:    #fdf2f2;
-      --red-mid:   #f0b8b8;
-      --green:     #1a6e40;
-      --green-lt:  #edf7f1;
-      --green-mid: #9fd4b5;
+      --blue:     #00629B;
+      --blue-dk:  #004f7c;
+      --blue-lt:  #e6f1f8;
+      --blue-mid: #b8d9ee;
+      --white:    #ffffff;
+      --ink:      #0d1b2a;
+      --paper:    #f2f7fb;
+      --muted:    #4e6070;
+      --border:   #ccdce8;
+      --red:      #b92b2b;
+      --red-lt:   #fdf2f2;
+      --red-mid:  #f0b8b8;
+      --green:    #1a6e40;
+      --green-lt: #edf7f1;
+      --green-mid:#9fd4b5;
+      --li-blue:  #0a66c2;
     }
-    body {
-      font-family: 'Instrument Sans', sans-serif;
-      background: var(--paper);
-      color: var(--ink);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 24px;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 320px;
-      background: linear-gradient(to bottom, rgba(0,98,155,0.07), transparent);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .wrap { position: relative; z-index: 1; width: 100%; max-width: 520px; }
+    body { font-family:'Instrument Sans',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; }
+    body::before { content:''; position:fixed; top:0; left:0; right:0; height:320px; background:linear-gradient(to bottom,rgba(0,98,155,0.07),transparent); pointer-events:none; z-index:0; }
+    .wrap { position:relative; z-index:1; width:100%; max-width:520px; }
 
-    /* ── Header ── */
-    .header { text-align: center; margin-bottom: 36px; animation: rise 0.6s ease both; }
-    .logo-wrap { margin-bottom: 22px; }
-    .logo-wrap img { height: 80px; width: auto; max-width: 280px; object-fit: contain; }
-    .logo-fallback { display: none; flex-direction: column; align-items: center; gap: 4px; }
-    .logo-fallback .ieee-text { font-family: 'Source Serif 4', serif; font-size: 30px; font-weight: 700; color: var(--blue); letter-spacing: 0.04em; }
-    .logo-fallback .section-text { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
-    h1 { font-family: 'Source Serif 4', serif; font-size: clamp(24px, 4.5vw, 34px); font-weight: 700; line-height: 1.15; color: var(--ink); }
-    .subtitle { margin-top: 8px; font-size: 13.5px; color: var(--muted); }
-    .subtitle strong { color: var(--blue); font-weight: 600; }
-    .divider-line { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
-    .divider-line::before, .divider-line::after { content: ''; flex: 1; height: 1px; background: var(--blue-mid); opacity: 0.6; }
-    .divider-line span { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 600; opacity: 0.7; }
+    .header { text-align:center; margin-bottom:36px; animation:rise 0.6s ease both; }
+    .logo-wrap { margin-bottom:22px; }
+    .logo-wrap img { height:80px; width:auto; max-width:280px; object-fit:contain; }
+    .logo-fallback { display:none; flex-direction:column; align-items:center; gap:4px; }
+    .logo-fallback .ieee-text { font-family:'Source Serif 4',serif; font-size:30px; font-weight:700; color:var(--blue); }
+    .logo-fallback .section-text { font-size:11px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+    h1 { font-family:'Source Serif 4',serif; font-size:clamp(24px,4.5vw,34px); font-weight:700; line-height:1.15; color:var(--ink); }
+    .subtitle { margin-top:8px; font-size:13.5px; color:var(--muted); }
+    .subtitle strong { color:var(--blue); font-weight:600; }
+    .divider-line { display:flex; align-items:center; gap:10px; margin-top:18px; }
+    .divider-line::before,.divider-line::after { content:''; flex:1; height:1px; background:var(--blue-mid); opacity:0.6; }
+    .divider-line span { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--blue); font-weight:600; opacity:0.7; }
 
-    /* ── Card ── */
-    .card { background: var(--white); border: 1px solid var(--border); border-top: 3px solid var(--blue); border-radius: 8px; padding: 36px 32px; box-shadow: 0 4px 24px rgba(0,98,155,0.08); animation: rise 0.6s ease 0.1s both; }
-    .field-label { display: block; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
-    input[type="text"] { width: 100%; font-family: 'Instrument Sans', sans-serif; font-size: 20px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: var(--blue-lt); border: 1.5px solid var(--border); border-radius: 6px; padding: 14px 16px; outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
-    input[type="text"]:focus { border-color: var(--blue); background: var(--white); box-shadow: 0 0 0 3px rgba(0,98,155,0.12); }
-    input::placeholder { color: #a0b4c4; font-size: 14px; letter-spacing: 0.05em; }
-    .hint { margin-top: 8px; font-size: 12px; color: var(--muted); }
-    .btn { margin-top: 16px; width: 100%; padding: 15px; font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .btn-verify { background: var(--blue); color: var(--white); margin-top: 20px; }
-    .btn-verify:hover:not(:disabled) { background: var(--blue-dk); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,98,155,0.28); }
-    .btn-download { background: var(--white); color: var(--blue); border: 2px solid var(--blue); }
-    .btn-download:hover:not(:disabled) { background: var(--blue-lt); }
-    .btn:active { transform: none; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
-    .btn.loading .spinner { display: block; }
-    .btn.loading .btn-text { display: none; }
+    .card { background:var(--white); border:1px solid var(--border); border-top:3px solid var(--blue); border-radius:8px; padding:36px 32px; box-shadow:0 4px 24px rgba(0,98,155,0.08); animation:rise 0.6s ease 0.1s both; }
+    .api-banner { background:#fffbea; border:1px solid #f0d050; border-radius:6px; padding:11px 14px; font-size:12.5px; color:#7a5800; margin-bottom:20px; display:none; }
+    .api-banner.show { display:block; }
+    .field-label { display:block; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:10px; }
+    input[type="text"] { width:100%; font-family:'Instrument Sans',sans-serif; font-size:20px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink); background:var(--blue-lt); border:1.5px solid var(--border); border-radius:6px; padding:14px 16px; outline:none; transition:border-color 0.2s,box-shadow 0.2s,background 0.2s; }
+    input[type="text"]:focus { border-color:var(--blue); background:var(--white); box-shadow:0 0 0 3px rgba(0,98,155,0.12); }
+    input::placeholder { color:#a0b4c4; font-size:14px; letter-spacing:0.05em; }
+    .hint { margin-top:8px; font-size:12px; color:var(--muted); }
 
-    /* ── Result ── */
-    .result { margin-top: 24px; display: none; border-radius: 8px; padding: 24px; animation: rise 0.4s ease both; }
-    .result.valid   { display: block; background: var(--green-lt); border: 1px solid var(--green-mid); border-left: 4px solid var(--green); }
-    .result.invalid { display: block; background: var(--red-lt);   border: 1px solid var(--red-mid);   border-left: 4px solid var(--red); }
-    .result-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-    .result-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .valid   .result-icon { background: var(--green); }
-    .invalid .result-icon { background: var(--red); }
-    .result-title { font-family: 'Source Serif 4', serif; font-size: 19px; font-weight: 700; }
-    .valid   .result-title { color: var(--green); }
-    .invalid .result-title { color: var(--red); }
-    .result-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .sep { height: 1px; background: var(--border); margin: 14px 0; opacity: 0.6; }
-    .data-grid { display: grid; grid-template-columns: 140px 1fr; gap: 11px 16px; align-items: start; }
-    .data-label { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding-top: 2px; }
-    .data-value { font-size: 14px; font-weight: 500; color: var(--ink); }
-    .stamp { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); font-weight: 600; opacity: 0.75; }
-    .invalid-msg { font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .btn { width:100%; padding:14px; font-family:'Instrument Sans',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; border:none; border-radius:6px; cursor:pointer; transition:background 0.2s,transform 0.15s,box-shadow 0.15s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; margin-top:12px; box-sizing:border-box; }
+    .btn-verify { background:var(--blue); color:var(--white); margin-top:20px; }
+    .btn-verify:hover:not(:disabled) { background:var(--blue-dk); transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,98,155,0.28); }
+    .btn-download { background:var(--white); color:var(--blue); border:2px solid var(--blue); }
+    .btn-download:hover { background:var(--blue-lt); transform:translateY(-1px); }
+    .btn-linkedin { background:var(--li-blue); color:var(--white); }
+    .btn-linkedin:hover { background:#004182; transform:translateY(-1px); box-shadow:0 6px 20px rgba(10,102,194,0.3); }
+    .btn:active { transform:none; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+    .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    .btn.loading .spinner { display:block; }
+    .btn.loading .btn-text { display:none; }
 
-    /* ── Footer ── */
-    .footer { text-align: center; margin-top: 24px; font-size: 11.5px; color: var(--muted); animation: rise 0.6s ease 0.2s both; }
-    .footer a { color: var(--blue); text-decoration: none; font-weight: 500; }
+    .result { margin-top:24px; display:none; border-radius:8px; padding:24px; animation:rise 0.4s ease both; }
+    .result.valid   { display:block; background:var(--green-lt); border:1px solid var(--green-mid); border-left:4px solid var(--green); }
+    .result.invalid { display:block; background:var(--red-lt);   border:1px solid var(--red-mid);   border-left:4px solid var(--red); }
+    .result-head { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+    .result-icon { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .valid   .result-icon { background:var(--green); }
+    .invalid .result-icon { background:var(--red); }
+    .result-title { font-family:'Source Serif 4',serif; font-size:19px; font-weight:700; }
+    .valid   .result-title { color:var(--green); }
+    .invalid .result-title { color:var(--red); }
+    .result-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .sep { height:1px; background:var(--border); margin:14px 0; opacity:0.6; }
+    .data-grid { display:grid; grid-template-columns:160px 1fr; gap:11px 16px; align-items:start; }
+    .data-label { font-size:10px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); font-weight:600; padding-top:2px; }
+    .data-value { font-size:14px; font-weight:500; color:var(--ink); }
+    .stamp { display:inline-flex; align-items:center; gap:6px; margin-top:14px; margin-bottom:4px; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); font-weight:600; opacity:0.75; }
+    .invalid-msg { font-size:14px; color:var(--muted); line-height:1.65; }
 
-    /* ── Hidden certificate canvas for PDF generation ── */
-    #cert-canvas-wrap {
-      position: fixed;
-      left: -9999px; top: -9999px;
-      width: 1122px; height: 794px; /* A4 landscape @ 96dpi */
-      background: white;
-      overflow: hidden;
-    }
+    .footer { text-align:center; margin-top:24px; font-size:11.5px; color:var(--muted); animation:rise 0.6s ease 0.2s both; }
+    .footer a { color:var(--blue); text-decoration:none; font-weight:500; }
+    .footer a:hover { text-decoration:underline; }
 
-    /* ── Certificate Design ── */
-    .cert {
-      width: 1122px; height: 794px;
-      background: #fff;
-      position: relative;
-      font-family: 'Source Serif 4', serif;
-      display: flex;
-      flex-direction: column;
-    }
-    .cert-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0 80px;
-      padding-top: 30px;
-      text-align: center;
-    }
-    .cert-header {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      padding: 28px 40px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .cert-logo-area {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .cert-logo-img {
-      height: 56px;
-      width: auto;
-    }
-    /* Fallback IEEE text logo */
-    .cert-logo-text {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .cert-ieee-letters {
-      font-family: 'Source Serif 4', serif;
-      font-size: 42px;
-      font-weight: 700;
-      color: #00629B;
-      letter-spacing: 0.06em;
-      line-height: 1;
-    }
-    .cert-ieee-section {
-      display: flex;
-      flex-direction: column;
-      border-left: 3px solid #00629B;
-      padding-left: 10px;
-      line-height: 1.2;
-    }
-    .cert-ieee-section span:first-child {
-      font-size: 16px;
-      font-weight: 600;
-      color: #00629B;
-      font-family: 'Instrument Sans', sans-serif;
-    }
-    .cert-ieee-section span:last-child {
-      font-size: 16px;
-      font-weight: 400;
-      color: #00629B;
-      font-family: 'Instrument Sans', sans-serif;
-    }
-
-    /* QR area top right */
-    .cert-qr-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    .cert-qr-box {
-      width: 90px; height: 90px;
-      border: 1px solid #ddd;
-      display: flex; align-items: center; justify-content: center;
-      background: white;
-    }
-    .cert-qr-box canvas, .cert-qr-box img { width: 86px !important; height: 86px !important; }
-    .cert-qr-label { font-size: 9px; font-family: 'Instrument Sans', sans-serif; color: #666; text-align: center; line-height: 1.4; }
-    .cert-qr-code  { font-size: 8px; font-family: 'Instrument Sans', sans-serif; color: #333; font-weight: 600; text-align: center; max-width: 100px; word-break: break-all; }
-
-    /* Main text */
-    .cert-otorga {
-      font-size: 18px;
-      font-weight: 400;
-      color: #555;
-      margin-bottom: 10px;
-      font-family: 'Instrument Sans', sans-serif;
-      margin-top: 100px;
-    }
-    .cert-nombre {
-      font-size: 48px;
-      font-weight: 700;
-      color: #111;
-      line-height: 1.1;
-      margin-bottom: 10px;
-      font-family: 'Source Serif 4', serif;
-    }
-    .cert-el-reco {
-      font-size: 15px;
-      color: #666;
-      font-family: 'Instrument Sans', sans-serif;
-      margin-bottom: 8px;
-    }
-    .cert-reconocimiento {
-      font-size: 28px;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 10px;
-      font-family: 'Source Serif 4', serif;
-    }
-    .cert-frase {
-      font-size: 13px;
-      color: #777;
-      font-style: italic;
-      max-width: 700px;
-      line-height: 1.5;
-      font-family: 'Source Serif 4', serif;
-    }
-
-    /* Fecha */
-    .cert-fecha {
-      position: absolute;
-      right: 60px;
-      bottom: 135px;
-      font-size: 12px;
-      color: #555;
-      font-family: 'Instrument Sans', sans-serif;
-    }
-
-    /* Firmas */
-    .cert-firmas {
-      position: absolute;
-      bottom: 42px;
-      left: 0; right: 0;
-      display: flex;
-      justify-content: space-around;
-      padding: 0 60px;
-    }
-    .cert-firma {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .cert-firma-texto {
-      font-family: 'Dancing Script', cursive;
-      font-size: 32px;
-      font-weight: 700;
-      color: #222;
-      line-height: 1;
-      margin-bottom: 2px;
-      min-height: 44px;
-      display: flex;
-      align-items: flex-end;
-    }
-    .cert-firma-line {
-      width: 200px;
-      height: 1px;
-      background: #999;
-      margin-bottom: 6px;
-    }
-    .cert-firma-nombre {
-      font-size: 12px;
-      font-weight: 600;
-      color: #222;
-      font-family: 'Instrument Sans', sans-serif;
-      text-align: center;
-    }
-    .cert-firma-cargo {
-      font-size: 11px;
-      color: #555;
-      font-family: 'Instrument Sans', sans-serif;
-      text-align: center;
-    }
-    .cert-firma-org {
-      font-size: 11px;
-      color: #555;
-      font-family: 'Instrument Sans', sans-serif;
-      text-align: center;
-    }
-
-    /* Blue footer bar */
-    .cert-footer-bar {
-      height: 14px;
-      background: #00629B;
-      flex-shrink: 0;
-    }
-
-    @keyframes rise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-    @keyframes spin  { to { transform:rotate(360deg); } }
+    @keyframes rise { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    @keyframes spin  { to{transform:rotate(360deg)} }
   </style>
 </head>
 <body>
-
-<!-- Hidden certificate for PDF rendering -->
-<div id="cert-canvas-wrap">
-  <div class="cert" id="cert-template">
-    <div class="cert-header">
-      <!-- Logo -->
-      <div class="cert-logo-area">
-        <img src="logo.png" class="cert-logo-img" id="cert-logo-img"
-             onerror="this.style.display='none'; document.getElementById('cert-logo-fallback').style.display='flex';" />
-        <div class="cert-logo-text" id="cert-logo-fallback" style="display:none">
-          <span class="cert-ieee-letters">IEEE</span>
-          <div class="cert-ieee-section">
-            <span>Sección</span>
-            <span>Ecuador</span>
-          </div>
-        </div>
-      </div>
-      <!-- QR -->
-      <div class="cert-qr-area">
-        <div class="cert-qr-box" id="cert-qr-box"></div>
-        <div class="cert-qr-label">Código de certificado:</div>
-        <div class="cert-qr-code" id="cert-qr-code-label"></div>
-      </div>
-    </div>
-
-    <!-- Body -->
-    <div class="cert-body">
-      <div class="cert-otorga">Otorga el siguiente reconocimiento a:</div>
-      <div class="cert-nombre" id="cert-nombre"></div>
-      <div class="cert-el-reco">el reconocimiento de:</div>
-      <div class="cert-reconocimiento" id="cert-reconocimiento"></div>
-      <div class="cert-frase" id="cert-frase"></div>
-    </div>
-
-    <!-- Fecha -->
-    <div class="cert-fecha" id="cert-fecha"></div>
-
-    <!-- Firmas -->
-    <div class="cert-firmas">
-      <div class="cert-firma">
-        <div class="cert-firma-texto" id="cert-firma1-texto"></div>
-        <div class="cert-firma-line"></div>
-        <div class="cert-firma-nombre" id="cert-firma1-nombre"></div>
-        <div class="cert-firma-cargo" id="cert-firma1-cargo"></div>
-        <div class="cert-firma-org">IEEE Sección Ecuador</div>
-      </div>
-      <div class="cert-firma">
-        <div class="cert-firma-texto" id="cert-firma2-texto"></div>
-        <div class="cert-firma-line"></div>
-        <div class="cert-firma-nombre" id="cert-firma2-nombre"></div>
-        <div class="cert-firma-cargo" id="cert-firma2-cargo"></div>
-        <div class="cert-firma-org">IEEE Sección Ecuador</div>
-      </div>
-    </div>
-
-    <!-- Blue bar -->
-    <div class="cert-footer-bar"></div>
-  </div>
-</div>
-
-<!-- Verificador UI -->
 <div class="wrap">
+
   <div class="header">
     <div class="logo-wrap">
       <img src="logo.png" alt="IEEE Sección Ecuador"
-           onerror="this.style.display='none'; document.getElementById('ui-logo-fallback').style.display='flex';" />
-      <div id="ui-logo-fallback" class="logo-fallback">
+           onerror="this.style.display='none';document.getElementById('ui-logo-fb').style.display='flex';" />
+      <div id="ui-logo-fb" class="logo-fallback">
         <span class="ieee-text">IEEE</span>
         <span class="section-text">Sección Ecuador</span>
       </div>
@@ -388,18 +108,19 @@
   </div>
 
   <div class="card">
+    <div id="apiBanner" class="api-banner">
+      ⚙️ Configura la <strong>API_URL</strong> con tu URL de Apps Script.
+    </div>
     <label class="field-label" for="certId">Código del certificado</label>
     <input type="text" id="certId"
       placeholder="Ej: IEEE-EC-IJ-2025-001"
       autocomplete="off" autocorrect="off"
       autocapitalize="characters" spellcheck="false" maxlength="50" />
     <p class="hint">El código aparece impreso en tu certificado.</p>
-
     <button class="btn btn-verify" id="verifyBtn" onclick="verify()">
       <span class="btn-text">Verificar certificado</span>
       <div class="spinner"></div>
     </button>
-
     <div id="result" class="result"></div>
   </div>
 
@@ -409,47 +130,25 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 <script>
-// ════════════════════════════════════════════════════
-//  CONFIGURACIÓN
-// ════════════════════════════════════════════════════
-const CONFIG = {
-  SHEET_ID:   '1xDchX5T81kLX-CRrSKCBCdoD4Cz1MIOQMNqVUT9rPWQ',
-  SHEET_NAME: 'Certificados',
-  // Columnas del Sheet (0 = A, 1 = B, ...)
-  COL_ID:             0,   // A — Código
-  COL_NOMBRE:         1,   // B — Nombre participante
-  COL_RECONOCIMIENTO: 2,   // C — Reconocimiento
-  COL_FRASE:          3,   // D — Frase descriptiva
-  COL_FECHA:          4,   // E — Fecha  (¡actualiza si cambiaste el orden!)
-  COL_ESTADO:         5,   // F — Estado
-  COL_FIRMANTE1:      6,   // G — Firmante 1 nombre
-  COL_CARGO1:         7,   // H — Cargo firmante 1
-  COL_FIRMANTE2:      8,   // I — Firmante 2 nombre
-  COL_CARGO2:         9,   // J — Cargo firmante 2
-};
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
+//  CONFIGURACIÓN — edita estas dos líneas
+// ══════════════════════════════════════════════
+const API_URL      = 'https://script.google.com/macros/s/AKfycbzb61hTynvrNPKSUkxdhbBmOe3yjl3Cxu5FasaMxOIsIxzEOmIbWii-Uyu-K4HIEh871A/exec';
+const VERIFIER_URL = 'https://victoru96.github.io/Verificador-Certificados/';
+// ══════════════════════════════════════════════
 
-// Función para generar iniciales como firma caligráfica
-function makeSignatureText(fullName) {
-  if (!fullName) return '';
-  // Toma primeras letras del nombre y apellido para simular firma
-  const parts = fullName.trim().split(/\s+/);
-  // Si tiene prefijo tipo "Ing." lo saltamos
-  const clean = parts.filter(p => !p.endsWith('.') || p.length > 3);
-  if (clean.length >= 2) {
-    return clean[0] + ' ' + clean[clean.length - 1];
+window.addEventListener('DOMContentLoaded', () => {
+  if (API_URL.includes('PON_AQUÍ')) {
+    document.getElementById('apiBanner').classList.add('show');
   }
-  return clean[0] || fullName;
-}
-
-let lastData = null;
+});
 
 document.getElementById('certId').addEventListener('keydown', e => {
   if (e.key === 'Enter') verify();
 });
+
+let lastData = null;
 
 async function verify() {
   const input = document.getElementById('certId');
@@ -462,45 +161,48 @@ async function verify() {
   btn.classList.add('loading');
 
   try {
-    const url  = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
+    const url  = `${API_URL}?codigo=${encodeURIComponent(code)}&ua=${encodeURIComponent(navigator.userAgent.substring(0,60))}`;
     const res  = await fetch(url);
-    const text = await res.text();
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    const data = await res.json();
 
-    const row = (json.table.rows || []).find(r => {
-      const cell = r.c[CONFIG.COL_ID];
-      return cell?.v && String(cell.v).trim().toUpperCase() === code;
-    });
-
-    if (!row) {
+    if (!data.ok) {
+      renderResult(data.error === 'RATE_LIMIT' ? 'ratelimit' : 'error');
+    } else if (!data.encontrado) {
       renderResult('not-found', { code });
+    } else if (!data.valido) {
+      renderResult('revoked');
     } else {
-      const get = i => String(row.c[i]?.v ?? '').trim();
-      const estado = get(CONFIG.COL_ESTADO).toUpperCase();
-      const revoked = ['REVOCADO','ANULADO','INVALIDO','INACTIVO'].includes(estado);
-
-      lastData = {
-        id:             code,
-        nombre:         get(CONFIG.COL_NOMBRE),
-        reconocimiento: get(CONFIG.COL_RECONOCIMIENTO),
-        frase:          get(CONFIG.COL_FRASE),
-        fecha:          get(CONFIG.COL_FECHA),
-        estado:         get(CONFIG.COL_ESTADO),
-        firmante1:      get(CONFIG.COL_FIRMANTE1),
-        cargo1:         get(CONFIG.COL_CARGO1),
-        firmante2:      get(CONFIG.COL_FIRMANTE2),
-        cargo2:         get(CONFIG.COL_CARGO2),
-      };
-
-      renderResult(revoked ? 'revoked' : 'valid', lastData);
+      lastData = data.datos;
+      renderResult('valid', data.datos);
     }
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     renderResult('error');
   }
 
   btn.disabled = false;
   btn.classList.remove('loading');
+}
+
+function buildLinkedInUrl(data) {
+  let year = '', month = '';
+  const fecha = String(data.fecha || '');
+  const m1 = fecha.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  const m2 = fecha.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if (m1) { year = m1[3]; month = String(m1[2]).padStart(2,'0'); }
+  else if (m2) { year = m2[1]; month = String(m2[2]).padStart(2,'0'); }
+
+  const certUrl = `${VERIFIER_URL}?codigo=${encodeURIComponent(data.id)}`;
+  const params = new URLSearchParams({
+    startTask:        'CERTIFICATION_NAME',
+    name:             `${data.tipoReconocimiento} — ${data.evento}`,
+    organizationName: 'IEEE Sección Ecuador',
+    issueYear:        year,
+    issueMonth:       month,
+    certUrl:          certUrl,
+    certId:           data.id,
+  });
+  return `https://www.linkedin.com/profile/add?${params.toString()}`;
 }
 
 function renderResult(type, data = {}) {
@@ -511,6 +213,14 @@ function renderResult(type, data = {}) {
 
   if (type === 'valid') {
     el.className = 'result valid';
+    const hasPDF    = data.pdfUrl && data.pdfUrl.startsWith('http');
+    const liUrl     = buildLinkedInUrl(data);
+    const downloadBtn = hasPDF
+      ? `<a href="${esc(data.pdfUrl)}" target="_blank" style="display:block;text-decoration:none;">
+           <button class="btn btn-download">⬇&nbsp; Descargar certificado PDF</button>
+         </a>`
+      : '';
+
     el.innerHTML = `
       <div class="result-head">
         <div class="result-icon">✅</div>
@@ -521,125 +231,39 @@ function renderResult(type, data = {}) {
       </div>
       <div class="sep"></div>
       <div class="data-grid">
-        ${dr('Participante',    data.nombre)}
-        ${dr('Reconocimiento',  data.reconocimiento)}
-        ${dr('Fecha',           data.fecha)}
-        ${dr('Estado',          data.estado)}
-        ${dr('Firmado por',     data.firmante1 ? data.firmante1 + (data.firmante2 ? ' / ' + data.firmante2 : '') : '')}
+        ${dr('Participante',         data.nombre)}
+        ${dr('Tipo de Reconocimiento', data.tipoReconocimiento)}
+        ${dr('Evento',               data.evento)}
+        ${dr('Fecha',                data.fecha)}
+        ${dr('Estado',               data.estado)}
       </div>
       <div class="stamp">✦ Verificado — IEEE Sección Ecuador</div>
-      <button class="btn btn-download" onclick="downloadCert()">
-        <span class="btn-text">⬇&nbsp; Descargar certificado PDF</span>
-      </button>`;
+      ${downloadBtn}
+      <a href="${liUrl}" target="_blank" style="display:block;text-decoration:none;">
+        <button class="btn btn-linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Agregar a LinkedIn
+        </button>
+      </a>`;
+
   } else if (type === 'revoked') {
     el.className = 'result invalid';
     el.innerHTML = `<div class="result-head"><div class="result-icon">⛔</div><div><div class="result-title">Certificado revocado</div><div class="result-sub">Este certificado fue anulado</div></div></div><p class="invalid-msg" style="margin-top:4px">El certificado existe pero fue revocado y no tiene validez oficial.</p>`;
   } else if (type === 'not-found') {
     el.className = 'result invalid';
-    el.innerHTML = `<div class="result-head"><div class="result-icon">❌</div><div><div class="result-title">No encontrado</div><div class="result-sub">El código no existe en los registros</div></div></div><p class="invalid-msg" style="margin-top:4px">Código ingresado: <strong>${esc(data.code)}</strong><br>Verifica que esté escrito correctamente.</p>`;
+    el.innerHTML = `<div class="result-head"><div class="result-icon">❌</div><div><div class="result-title">No encontrado</div><div class="result-sub">El código no existe en los registros</div></div></div><p class="invalid-msg" style="margin-top:4px">Código: <strong>${esc(data.code)}</strong><br>Verifica que esté escrito correctamente tal como aparece en tu certificado.</p>`;
+  } else if (type === 'ratelimit') {
+    el.className = 'result invalid';
+    el.innerHTML = `<div class="result-head"><div class="result-icon">⏱️</div><div><div class="result-title">Demasiadas consultas</div><div class="result-sub">Límite de seguridad activado</div></div></div><p class="invalid-msg" style="margin-top:4px">Has realizado demasiadas consultas. Intenta nuevamente en una hora.</p>`;
   } else {
     el.className = 'result invalid';
-    el.innerHTML = `<div class="result-head"><div class="result-icon">⚠️</div><div><div class="result-title">Error de conexión</div><div class="result-sub">No se pudo consultar la base de datos</div></div></div><p class="invalid-msg" style="margin-top:4px">Revisa tu conexión e intenta de nuevo. Si persiste, contacta al organizador.</p>`;
+    el.innerHTML = `<div class="result-head"><div class="result-icon">⚠️</div><div><div class="result-title">Error de conexión</div><div class="result-sub">No se pudo consultar la base de datos</div></div></div><p class="invalid-msg" style="margin-top:4px">Revisa tu conexión e intenta de nuevo.</p>`;
   }
-}
-
-// ── PDF Generation ──────────────────────────────────
-async function downloadCert() {
-  if (!lastData) return;
-
-  const btn = document.querySelector('.btn-download');
-  btn.disabled = true;
-  btn.querySelector('.btn-text').textContent = '⏳  Generando PDF...';
-
-  // 1. Populate the hidden certificate template
-  document.getElementById('cert-nombre').textContent         = lastData.nombre;
-  document.getElementById('cert-reconocimiento').textContent = lastData.reconocimiento;
-  document.getElementById('cert-frase').textContent          = lastData.frase;
-  document.getElementById('cert-fecha').textContent          = lastData.fecha;
-  document.getElementById('cert-qr-code-label').textContent  = lastData.id;
-
-  // Firmas caligráficas dinámicas
-  document.getElementById('cert-firma1-texto').textContent  = makeSignatureText(lastData.firmante1);
-  document.getElementById('cert-firma1-nombre').textContent = lastData.firmante1;
-  document.getElementById('cert-firma1-cargo').textContent  = lastData.cargo1;
-  document.getElementById('cert-firma2-texto').textContent  = makeSignatureText(lastData.firmante2);
-  document.getElementById('cert-firma2-nombre').textContent = lastData.firmante2;
-  document.getElementById('cert-firma2-cargo').textContent  = lastData.cargo2;
-
-  // 2. Generate QR inside the certificate
-  const qrBox = document.getElementById('cert-qr-box');
-  qrBox.innerHTML = '';
-  await generateQRInto(qrBox, lastData.id);
-
-  // 3. Wait for fonts and QR to render
-  await new Promise(r => setTimeout(r, 600));
-
-  // 4. Capture with html2canvas
-  const certEl = document.getElementById('cert-template');
-  try {
-    const canvas = await html2canvas(certEl, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      width: 1122,
-      height: 794,
-      logging: false,
-    });
-
-    // 5. Convert to PDF
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    const imgData = canvas.toDataURL('image/jpeg', 0.97);
-    pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
-    pdf.save(`certificado-${lastData.id}.pdf`);
-
-  } catch(err) {
-    console.error('Error generando PDF:', err);
-    alert('Hubo un error al generar el PDF. Intenta de nuevo.');
-  }
-
-  btn.disabled = false;
-  btn.querySelector('.btn-text').textContent = '⬇\u00a0 Descargar certificado PDF';
-}
-
-function generateQRInto(container, text) {
-  return new Promise(resolve => {
-    const div = document.createElement('div');
-    container.appendChild(div);
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-    script.onload = () => {
-      try {
-        new QRCode(div, {
-          text, width: 86, height: 86,
-          colorDark: '#000000', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M,
-        });
-      } catch(e) {}
-      setTimeout(resolve, 400);
-    };
-    script.onerror = resolve;
-    // If already loaded
-    if (window.QRCode) {
-      script.remove();
-      try {
-        new QRCode(div, {
-          text, width: 86, height: 86,
-          colorDark: '#000000', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M,
-        });
-      } catch(e) {}
-      setTimeout(resolve, 400);
-      return;
-    }
-    document.head.appendChild(script);
-  });
 }
 
 function dr(label, value) {
   if (!value) return '';
-  return `<span class="data-label">${esc(label)}</span><span class="data-value">${esc(value)}</span>`;
+  return `<span class="data-label">${esc(label)}</span><span class="data-value">${esc(String(value))}</span>`;
 }
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
